@@ -6,20 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('system_id')->constrained('systems'); // FK -> systems.id
+            $table->string('name');
+            $table->string('code');
+            $table->string('icon')->nullable(); // optional
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('modules');

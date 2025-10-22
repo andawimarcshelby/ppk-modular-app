@@ -8,18 +8,16 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('submodules', function (Blueprint $table) {
+        Schema::create('systems', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('module_id')->constrained('modules'); // FK -> modules.id
             $table->string('name');
-            $table->string('code');
-            $table->string('route')->nullable(); // optional frontend route
+            $table->string('code')->unique(); // e.g., ADMIN, SALES, INVENTORY
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('submodules');
+        Schema::dropIfExists('systems');
     }
 };

@@ -1,0 +1,62 @@
+# Compose skeleton for dev: PostgreSQL + Laravel backend + Vite React frontend
+# Run from project root later: `docker compose up --build`
+# Note: Dockerfiles for backend/frontend will be added next steps.
+
+services:
+  db:
+    image: postgres:15
+    container_name: ppk-db
+    environment:
+      POSTGRES_DB: ppk_modular
+      POSTGRES_USER: ppk_user
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ppk-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    working_dir: /var/www/html
+    volumes:
+      - ./backend:/var/www/html
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8000:8000"
+    # We'll scaffold Laravel next; this command serves the app in dev
+    command: sh -lc "php artisan serve --host=0.0.0.0 --port=8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ppk-frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    environment:
+      NODE_ENV: development
+      # Improve file watching on Windows bind mounts
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+    ports:
+      - "3000:3000"
+    # Vite dev server; proxy to backend will be set in vite.config later
+    command: sh -lc "npm install && npm run dev -- --host 0.0.0.0 --port 3000"
+    depends_on:
+      - backend
+
+volumes:
+  db-data:

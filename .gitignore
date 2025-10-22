@@ -1,0 +1,52 @@
+# ---------------------------
+# Global
+# ---------------------------
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+*.swo
+*.seed
+*.pid
+*.pid.lock
+*.cover
+coverage/
+.vscode/
+.idea/
+
+# ---------------------------
+# Docker (if local output dirs are added later)
+# ---------------------------
+docker-data/
+.docker/
+
+# ---------------------------
+# Backend (Laravel)
+# ---------------------------
+/backend/vendor/
+/backend/node_modules/
+/backend/.env
+/backend/.env.*
+/backend/.phpunit.result.cache
+/backend/.php-cs-fixer.cache
+/backend/public/storage
+/backend/storage/*.key
+/backend/storage/app/*
+!/backend/storage/app/public/.gitignore
+/backend/storage/framework/cache/*
+/backend/storage/framework/sessions/*
+/backend/storage/framework/testing/*
+/backend/storage/framework/views/*
+/backend/storage/logs/*
+/backend/bootstrap/cache/*.php
+
+# ---------------------------
+# Frontend (Vite React)
+# ---------------------------
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.env
+/frontend/.env.*
+/frontend/.eslintcache
+/frontend/.vite

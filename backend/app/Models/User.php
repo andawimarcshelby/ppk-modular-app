@@ -2,47 +2,61 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
+     * Mass-assignable columns matching our spec.
      */
     protected $fillable = [
-        'name',
+        'username',
         'email',
         'password',
+        'full_name',
+        'company_id',
+        'is_active',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
+     * Hidden attributes when serializing.
      */
     protected $hidden = [
         'password',
-        'remember_token',
+        // 'remember_token', // column dropped; keep commented for clarity
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Casts for attributes.
+     * - 'password' => 'hashed' automatically bcrypt-hashes when set.
      */
-    protected function casts(): array
+    protected $casts = [
+        'id' => 'integer',
+        'company_id' => 'integer',
+        'is_active' => 'boolean',
+        'password' => 'hashed',
+    ];
+
+    /**
+     * Relationship: a user belongs to a company.
+     */
+    public function company(): BelongsTo
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->belongsTo(Company::class);
+    }
+
+    /**
+     * Relationship: submodules granted to this user via pivot user_submodule.
+     */
+    public function submodules(): BelongsToMany
+    {
+        return $this->belongsToMany(Submodule::class, 'user_submodule')
+            ->withPivot(['granted_at', 'created_by']);
     }
 }

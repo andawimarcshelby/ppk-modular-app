@@ -7,10 +7,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * Mass-assignable columns matching our spec.
@@ -29,7 +30,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        // 'remember_token', // column dropped; keep commented for clarity
+        // 'remember_token', // column dropped; kept commented for clarity
     ];
 
     /**
